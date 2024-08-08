@@ -9,6 +9,7 @@ import prisma from "./client";
 const opts: StrategyOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: process.env.JWT_SECRET || "secret",
+  algorithms: ['HS256'], 
 };
 
 passport.use(

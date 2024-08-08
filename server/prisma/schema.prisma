@@ -19,10 +19,10 @@ model User {
   password     String
   name         String
   creationDate DateTime
-  isAuthor     Boolean
+  isAuthor     Boolean?
 
-  Post    Post[]
-  Comment Comment[]
+  posts    Post[]
+  comments Comment[]
 
   @@map("users")
 }

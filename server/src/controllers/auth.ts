@@ -46,8 +46,11 @@ export const register = expressAsyncHandler(
         });
 
         // Generate jwt
-        const payload = { sub: newUser.id };
-        const token = jwt.sign(payload, process.env.JWT_SECRET || "secret", {
+        const payload = {
+          sub: newUser.id,
+        };
+
+        const token = await jwt.sign(payload, process.env.JWT_SECRET || "secret", {
           expiresIn: "1h",
         });
 
@@ -85,15 +88,17 @@ export const login = expressAsyncHandler(
         return;
       }
 
-      const payload = { sub: user.id };
+      const payload = {
+        sub: user.id,
+      };
 
-      const token = jwt.sign(payload, process.env.JWT_SECRET || "secret", {
+      const token = await jwt.sign(payload, process.env.JWT_SECRET || "secret", {
         expiresIn: "1h",
       });
 
       res.json({ token });
     } catch (err) {
-      res.status(500).json({ message: "Server error" });
+      res.status(500).json({ message: "Server error", error: err });
     }
   }
 );
