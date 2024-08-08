@@ -4,10 +4,15 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import passport from './config/passport';
+
+import authRoutes from './routes/auth';
 
 dotenv.config();
 
 const app: Application = express();
+
+app.use(passport.initialize());
 
 // Middleware
 app.use(morgan('dev'));
@@ -16,7 +21,6 @@ app.use(cookieParser());
 app.use(cors());
 
 // Routes
-import authRoutes from './routes/auth';
 app.use('/api/auth', authRoutes);
 
 // Error handling middleware
