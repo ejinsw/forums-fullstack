@@ -10,6 +10,10 @@
 	import MaterialSymbolsPersonRounded from '~icons/material-symbols/person-rounded';
 	import MaterialSymbolsSettingsRounded from '~icons/material-symbols/settings-rounded';
 	import MaterialSymbolsLogoutRounded from '~icons/material-symbols/logout-rounded';
+	import MaterialSymbolsLoginRounded from '~icons/material-symbols/login-rounded';
+	import type { User } from '$lib/types';
+
+    export let user : User | null = null;
 
 	let open: boolean = true;
 	let navElement: HTMLElement;
@@ -34,10 +38,10 @@
 			icon: MaterialSymbolsSettingsRounded
 		},
 		{
-			title: 'Log out',
-			route: '/logout',
-			icon: MaterialSymbolsLogoutRounded
-		}
+			title: user ? 'Log out' : 'Log in',
+			route: user ? '/logout' : '/login',
+			icon: user ? MaterialSymbolsLogoutRounded : MaterialSymbolsLoginRounded
+		},
 	];
 
 	onMount(() => {
@@ -54,11 +58,11 @@
 <nav
 	bind:this={navElement}
 	class={clsx(
-		'flex flex-col py-4 px-4 bg-base-300 min-h-screen rounded-r-xl transition-width duration-300 ease-in-out overflow-hidden text-lg',
-		open ? 'w-fit' : 'w-24',
+		'flex flex-col py-4 px-4 border border-l-0 bg-base-100 min-h-screen rounded-r-xl transition-width duration-300 ease-in-out overflow-hidden text-lg',
+		open ? 'w-fit' : 'w-22',
 		$$props.class
 	)}
-    style="transition: width 0.3s;"
+	style="transition: width 0.3s;"
 >
 	<div class="flex justify-between items-center">
 		<button
@@ -68,7 +72,7 @@
 			<MageDashboard2 />
 		</button>
 		{#if open}
-			<button class="text-xs" on:click={toggleCollapse}>
+			<button class="text-xs min-w-fit" on:click={toggleCollapse}>
 				<MaterialSymbolsArrowBackIosNew />
 			</button>
 		{/if}
@@ -102,7 +106,7 @@
 				class="flex items-center space-x-3 py-2 px-4 mb-2 rounded-md hover:bg-base-200 transition-colors"
 				href={route}
 			>
-				<svelte:component this={icon} class="text-lg" />
+				<svelte:component this={icon} class="text-lg min-w-fit" />
 				{#if open}
 					<span class="whitespace-nowrap text-sm">{title}</span>
 				{/if}

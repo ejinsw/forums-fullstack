@@ -1,2 +1,7 @@
-<h1>Welcome to SvelteKit</h1>
-<p class="text-3xl text-blue-500">Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script lang="ts">
+	import ContentHolder from '$lib/components/ContentHolder.svelte';
+
+	export let data;
+</script>
+
+<ContentHolder items={data.posts} title="Recent Posts" link="/posts/recent" />

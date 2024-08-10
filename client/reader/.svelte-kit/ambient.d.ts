@@ -26,6 +26,7 @@
  * ```
  */
 declare module '$env/static/private' {
+	export const JWT_SECRET: string;
 	export const NVM_INC: string;
 	export const MANPATH: string;
 	export const TERM_PROGRAM: string;
@@ -125,6 +126,7 @@ declare module '$env/static/public' {
  */
 declare module '$env/dynamic/private' {
 	export const env: {
+		JWT_SECRET: string;
 		NVM_INC: string;
 		MANPATH: string;
 		TERM_PROGRAM: string;
