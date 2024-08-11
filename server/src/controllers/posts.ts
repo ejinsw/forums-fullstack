@@ -228,3 +228,52 @@ export const createComment = expressAsyncHandler(
     }
   }
 );
+
+export const createReply = expressAsyncHandler(
+  async (
+    req: Request<RequestBody, {}, Comment>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const user = req.user as User;
+      if (!user) {
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+      }
+
+      const { content, parentId } = req.body;
+      let postId: number | string = req.params.id;
+
+      if (!postId) {
+        res.status(400).json({ message: "Id params undefined" });
+        return;
+      }
+
+      postId = parseInt(postId, 10);
+      if (isNaN(postId)) {
+        res.status(400).json({ message: "Invalid id" });
+        return;
+      }
+
+      const newComment = await prisma.comment.create({
+        data: {
+          content,
+          creationDate: new Date(),
+          userId: user.id,
+          parentId
+        },
+      });
+
+      if (newComment) {
+        res.status(201).json({ message: "Created comment sucessfully" });
+      } else {
+        res
+          .status(500)
+          .json({ message: "Something went wrong, comment not created" });
+      }
+    } catch (err) {
+      res.status(500).json({ message: "Server error" });
+    }
+  }
+);

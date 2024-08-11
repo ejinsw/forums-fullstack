@@ -21,8 +21,10 @@ model User {
   creationDate DateTime
   isAuthor     Boolean?
 
-  posts    Post[]
-  comments Comment[]
+  posts     Post[]
+  comments  Comment[]
+  upvotes   Upvote[]
+  downvotes Downvote[]
 
   @@map("users")
 }
@@ -34,9 +36,11 @@ model Post {
   creationDate DateTime
   published    Boolean
 
-  userId   Int
-  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  comments Comment[]
+  userId    Int
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comments  Comment[]
+  upvotes   Upvote[]
+  downvotes Downvote[]
 
   @@map("posts")
 }
@@ -46,11 +50,46 @@ model Comment {
   content      String
   creationDate DateTime
 
-  postId Int
-  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId Int?
+  post   Post? @relation(fields: [postId], references: [id], onDelete: Cascade)
   userId Int
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  upvotes   Upvote[]
+  downvotes Downvote[]
+
+  parentId Int?
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies  Comment[] @relation("CommentReplies")
+
   @@index([postId])
   @@map("comments")
+}
+
+model Upvote {
+  id        Int  @id @default(autoincrement())
+  userId    Int
+  commentId Int?
+  postId    Int?
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  Post    Post?    @relation(fields: [postId], references: [id])
+
+  @@unique([userId, commentId]) // A user can only upvote a comment once
+  @@map("upvotes")
+}
+
+model Downvote {
+  id        Int  @id @default(autoincrement())
+  userId    Int
+  commentId Int?
+  postId    Int?
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  Post    Post?    @relation(fields: [postId], references: [id])
+
+  @@unique([userId, commentId]) // A user can only downvote a comment once
+  @@map("downvotes")
 }
