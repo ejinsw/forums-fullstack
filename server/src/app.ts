@@ -9,6 +9,7 @@ import passport from './config/passport';
 import authRoutes from './routes/auth';
 import postsRoutes from './routes/posts';
 import usersRoutes from './routes/users';
+import commentsRoutes from './routes/comments';
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use(passport.initialize());
 app.use('/api/auth', authRoutes);
 app.use('/api/posts', postsRoutes);
 app.use('/api/users', usersRoutes);
+app.use('/api/comments', commentsRoutes)
 
 // Token validator
 app.get('/api/validate-token', passport.authenticate('jwt', { session: false }), (req, res) => {

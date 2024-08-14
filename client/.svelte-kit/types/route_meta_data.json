@@ -4,6 +4,12 @@
 		"src/routes/+layout.server.ts",
 		"src/routes/+layout.server.ts"
 	],
+	"/comments/[id]": [
+		"src/routes/comments/[id]/+server.ts"
+	],
+	"/comments/[id]/update": [
+		"src/routes/comments/[id]/update/+server.ts"
+	],
 	"/login": [
 		"src/routes/login/+page.server.ts",
 		"src/routes/+layout.server.ts"
@@ -13,8 +19,7 @@
 	],
 	"/posts/[id]": [
 		"src/routes/posts/[id]/+page.server.ts",
-		"src/routes/+layout.server.ts",
-		"src/routes/posts/[id]/+server.ts"
+		"src/routes/+layout.server.ts"
 	],
 	"/register": [
 		"src/routes/register/+page.server.ts",

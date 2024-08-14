@@ -28,4 +28,5 @@ export interface Comment {
 	replies: Comment[];
 	userId: number;
 	postId: number;
+	isDeleted: boolean;
 }

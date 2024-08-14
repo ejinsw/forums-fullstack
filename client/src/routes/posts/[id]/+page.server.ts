@@ -2,22 +2,10 @@ import { error, fail, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { goto } from '$app/navigation';
 
-export const load: PageServerLoad = async ({ fetch, params, request, url }) => {
-	const referer = request.headers.get('referer'); // Get the previous route
-	let refererPath = null;
+export const load: PageServerLoad = async ({ cookies, fetch, params, url }) => {
+	const jwt = cookies.get('jwt');
 
-	if (referer) {
-		const refererUrl = new URL(referer);
-		refererPath = refererUrl.pathname + refererUrl.search + refererUrl.hash;
-	}
-
-	let route = refererPath;
-
-	if (refererPath === url.pathname || !refererPath) {
-		route = '/';
-	}
-
-	console.log('Previous route:', refererPath);
+	const route = url.searchParams.get('redirect');
 
 	const res = await fetch(`http://localhost:3000/api/posts/${params.id}`);
 
@@ -31,13 +19,14 @@ export const load: PageServerLoad = async ({ fetch, params, request, url }) => {
 		throw goto('/');
 	}
 
-	return { post, previous_route: route };
+	return { post, jwt, previous_route: route || '/' };
 };
 
 export const actions: Actions = {
 	default: async (event) => {
 		// Extract the form data from the request
 		const formData = await event.request.formData();
+		const formType = formData.get('formType') as string;
 		const comment = formData.get('comment') as string;
 
 		if (!comment) {
@@ -48,19 +37,41 @@ export const actions: Actions = {
 		}
 
 		try {
-			const response = await fetch(`http://localhost:3000/api/posts/${event.params.id}/comments`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${event.cookies.get('jwt')}`
-				},
-				body: JSON.stringify({ content: comment })
-			});
+			if (formType == 'comment') {
+				const response = await fetch(
+					`http://localhost:3000/api/posts/${event.params.id}/comments`,
+					{
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							Authorization: `Bearer ${event.cookies.get('jwt')}`
+						},
+						body: JSON.stringify({ content: comment })
+					}
+				);
 
-			if (!response.ok) {
-				const errorText = await response.json();
-				console.error('Error:', errorText);
-				return { comment, status: response.status, error: errorText.message };
+				if (!response.ok) {
+					const errorText = await response.json();
+					console.error('Error:', errorText);
+					return { comment, status: response.status, error: errorText.message };
+				}
+			} else if (formType == 'reply') {
+				const parentId = formData.get('parentId') as string;
+
+				const response = await fetch(`http://localhost:3000/api/comments/${parentId}`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${event.cookies.get('jwt')}`
+					},
+					body: JSON.stringify({ content: comment })
+				});
+
+				if (!response.ok) {
+					const errorText = await response.json();
+					console.error('Error:', errorText);
+					return { comment, status: response.status, error: errorText.message };
+				}
 			}
 		} catch (err) {
 			console.error(err);

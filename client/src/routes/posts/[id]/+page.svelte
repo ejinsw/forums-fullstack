@@ -1,11 +1,10 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import type { Comment, Post, User } from '$lib/types.js';
-	import { DateTime } from 'luxon';
+	import type { Post, User } from '$lib/types.js';
 	import MaterialSymbolsArrowBackIosNew from '~icons/material-symbols/arrow-back-ios-new';
-	import MingcuteSendLine from '~icons/mingcute/send-line';
+	import Comment from './Comment.svelte';
 
 	interface Data {
+		jwt: string;
 		post: Post;
 		previous_route: string;
 		user: User;
@@ -13,41 +12,35 @@
 
 	export let data: Data;
 
+	$: jwt = data.jwt;
+
 	$: post = data.post;
 
 	$: comments = post.comments;
 
-	let replyVisible: Record<string, boolean> = {};
-	$: {
-		initializeReplyVisible(comments);
-	}
+	let commentText: string = '';
 
-	function initializeReplyVisible(comments: Comment[]) {
-		comments.forEach((comment) => {
-			replyVisible[comment.id] = false;
+	async function postComment() {
+        if (commentText === "" ) {
+            console.log("Invalid comment format")
+            return;
+        }
 
-			if (comment.replies) initializeReplyVisible(comment.replies);
+		const response = await fetch(`http://localhost:3000/api/posts/${post.id}/comments`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${jwt}`
+			},
+			body: JSON.stringify({ content: commentText })
 		});
-	}
 
-	function toggleReplyVisible(id: number) {
-		Object.keys(replyVisible).forEach((id) => {
-            replyVisible[id] = false;
-        });
-		replyVisible[id] = !replyVisible[id];
-	}
+		if (!response.ok) {
+			const errorText = await response.json();
+			console.error('Error:', errorText);
+		}
 
-	function formatDate(date: string) {
-		// Parse the input date string
-		const parsedDate = DateTime.fromISO(date);
-
-		// Calculate the difference between now and the input date
-		const timeBetween = DateTime.now().diff(parsedDate);
-
-		// Convert the difference to a human-readable format, like days, hours, etc.
-		const timeDifference = timeBetween.toFormat("d 'days' h'h' m'm'");
-
-		return timeDifference;
+        location.reload();
 	}
 </script>
 
@@ -65,21 +58,22 @@
 	<!-- Comment Box -->
 	<div class="border-y border-gray-200 py-4 px-12">
 		{#if data.user}
-			<form use:enhance method="post" class="flex items-center text-sm">
+			<div class="flex items-center text-sm">
 				<input
+					bind:value={commentText}
 					type="text"
 					name="comment"
 					placeholder="Add a comment..."
 					class="flex-grow border border-gray-300 rounded-lg py-2 px-4 mr-4"
-					required
 				/>
 				<button
+					on:click={postComment}
 					type="submit"
 					class="bg-primary text-white rounded-lg py-2 px-6 hover:bg-primary-dark"
 				>
 					Submit
 				</button>
-			</form>
+			</div>
 		{:else}
 			<div class="flex w-full justify-center">
 				<a class="shadow-lg px-4 py-2 rounded-xl bg-primary text-secondary-content" href="/login"
@@ -91,39 +85,7 @@
 
 	<ul class="mx-12 my-12 flex flex-col gap-4">
 		{#each comments as comment}
-			<div class="flex flex-col">
-				<li>
-					<div class="flex items-center justify-between">
-						<a class="text-sm hover:text-primary" href={`/profile/${comment.userId}`}
-							>@{comment.user.username}</a
-						>
-						<small class="text-xs">{formatDate(comment.creationDate)}</small>
-					</div>
-					<p class="text-sm">{comment.content}</p>
-					<button class="text-sm" on:click={() => toggleReplyVisible(comment.id)}>Reply</button>
-				</li>
-				{#if data.user && replyVisible[comment.id]}
-					<form use:enhance method="post" class="flex items-center text-sm">
-						<input
-							type="text"
-							name="comment"
-							placeholder="Reply..."
-							class="flex-grow border rounded-lg py-1 px-4 mr-4"
-							required
-						/>
-						<button type="submit" class="text-primary text-xl">
-							<MingcuteSendLine />
-						</button>
-					</form>
-				{:else if replyVisible[comment.id]}
-					<div class="flex w-full justify-center">
-						<a
-							class="shadow-lg px-4 py-1 rounded-xl bg-primary text-secondary-content"
-							href="/login">Login</a
-						>
-					</div>
-				{/if}
-			</div>
+			<Comment {comment} {jwt} user={data.user} />
 		{/each}
 	</ul>
 </div>

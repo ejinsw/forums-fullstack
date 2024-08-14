@@ -62,6 +62,8 @@ model Comment {
   parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
   replies  Comment[] @relation("CommentReplies")
 
+  isDeleted Boolean?
+
   @@index([postId])
   @@map("comments")
 }
