@@ -3,10 +3,11 @@
 	import MaterialSymbolsArrowBackIosNew from '~icons/material-symbols/arrow-back-ios-new';
 	import Comment from './Comment.svelte';
 
-    import UpvoteHollow from '~icons/bx/upvote';
+	import UpvoteHollow from '~icons/bx/upvote';
 	import UpvoteFilled from '~icons/bx/bxs-upvote';
 	import DownvoteHollow from '~icons/bx/downvote';
 	import DownvoteFilled from '~icons/bx/bxs-downvote';
+	import { goto } from '$app/navigation';
 
 	interface Data {
 		jwt: string;
@@ -39,6 +40,10 @@
 	let commentText: string = '';
 
 	async function postComment() {
+		if (!user || !jwt) {
+			goto('/login');
+			return;
+		}
 		if (commentText === '') {
 			console.log('Invalid comment format');
 			return;
@@ -62,7 +67,10 @@
 	}
 
 	async function toggleUpvote() {
-		if (!user) return;
+		if (!user || !jwt) {
+			goto('/login');
+			return;
+		}
 		if (downvoted) toggleDownvote();
 
 		const response = await fetch(`http://localhost:3000/api/posts/${post.id}/upvote`, {
@@ -88,7 +96,10 @@
 	}
 
 	async function toggleDownvote() {
-		if (!user) return;
+		if (!user || !jwt) {
+			goto('/login');
+			return;
+		}
 		if (upvoted) toggleUpvote();
 
 		const response = await fetch(`http://localhost:3000/api/posts/${post.id}/downvote`, {
@@ -144,30 +155,23 @@
 				{/if}
 			</button>
 		</div>
-		{#if user}
-			<div class="flex w-full items-center text-sm">
-				<input
-					bind:value={commentText}
-					type="text"
-					name="comment"
-					placeholder="Add a comment..."
-					class="flex-grow border border-gray-300 rounded-lg py-2 px-4 mr-4"
-				/>
-				<button
-					on:click={postComment}
-					type="submit"
-					class="bg-primary text-white rounded-lg py-2 px-6 hover:bg-primary-dark"
-				>
-					Submit
-				</button>
-			</div>
-		{:else}
-			<div class="flex w-full justify-center">
-				<a class="shadow-lg px-4 py-2 rounded-xl bg-primary text-secondary-content" href="/login"
-					>Login</a
-				>
-			</div>
-		{/if}
+
+		<div class="flex w-full items-center text-sm">
+			<input
+				bind:value={commentText}
+				type="text"
+				name="comment"
+				placeholder="Add a comment..."
+				class="flex-grow border border-gray-300 rounded-lg py-2 px-4 mr-4"
+			/>
+			<button
+				on:click={postComment}
+				type="submit"
+				class="bg-primary text-white rounded-lg py-2 px-6 hover:bg-primary-dark"
+			>
+				Submit
+			</button>
+		</div>
 	</div>
 
 	<ul class="mx-12 my-12 flex flex-col gap-4">

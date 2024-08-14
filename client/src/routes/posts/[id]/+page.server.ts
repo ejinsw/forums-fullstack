@@ -2,9 +2,7 @@ import { error, fail, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { goto } from '$app/navigation';
 
-export const load: PageServerLoad = async ({ cookies, fetch, params, url }) => {
-	const jwt = cookies.get('jwt');
-
+export const load: PageServerLoad = async ({ fetch, params, url }) => {
 	const route = url.searchParams.get('redirect');
 
 	const res = await fetch(`http://localhost:3000/api/posts/${params.id}`);
@@ -19,7 +17,7 @@ export const load: PageServerLoad = async ({ cookies, fetch, params, url }) => {
 		throw goto('/');
 	}
 
-	return { post, jwt, previous_route: route || '/' };
+	return { post, previous_route: route || '/' };
 };
 
 export const actions: Actions = {

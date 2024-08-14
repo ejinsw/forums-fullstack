@@ -11,9 +11,11 @@
 	import MaterialSymbolsSettingsRounded from '~icons/material-symbols/settings-rounded';
 	import MaterialSymbolsLogoutRounded from '~icons/material-symbols/logout-rounded';
 	import MaterialSymbolsLoginRounded from '~icons/material-symbols/login-rounded';
+	import MaterialSymbolsAddBoxOutline from '~icons/material-symbols/add-box-outline';
+
 	import type { User } from '$lib/types';
 
-    export let user : User | null = null;
+	export let user: User | null = null;
 
 	let open: boolean = true;
 	let navElement: HTMLElement;
@@ -28,6 +30,11 @@
 			title: 'Profile',
 			route: '/profile',
 			icon: MaterialSymbolsPersonRounded
+		},
+		{
+			title: 'Create',
+			route: '/posts/create',
+			icon: MaterialSymbolsAddBoxOutline
 		}
 	];
 
@@ -41,7 +48,7 @@
 			title: user ? 'Log out' : 'Log in',
 			route: user ? '/logout' : '/login',
 			icon: user ? MaterialSymbolsLogoutRounded : MaterialSymbolsLoginRounded
-		},
+		}
 	];
 
 	onMount(() => {

@@ -17,6 +17,9 @@
 	"/logout": [
 		"src/routes/logout/+server.ts"
 	],
+	"/posts/create": [
+		"src/routes/+layout.server.ts"
+	],
 	"/posts/[id]": [
 		"src/routes/posts/[id]/+page.server.ts",
 		"src/routes/+layout.server.ts"

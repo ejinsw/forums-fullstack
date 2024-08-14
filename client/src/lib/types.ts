@@ -18,6 +18,8 @@ export interface Post {
 	userId: number;
 	user: User;
 	comments: Comment[];
+	upvotes: Upvote[];
+	downvotes: Downvote[];
 }
 
 export interface Comment {

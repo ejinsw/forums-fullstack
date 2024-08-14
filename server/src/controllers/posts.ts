@@ -87,18 +87,20 @@ export const createPost = expressAsyncHandler(
         return;
       }
 
+      let confirmPublished = published ? published : true;
+
       const newPost = await prisma.post.create({
         data: {
           title,
           content,
-          published,
+          published: confirmPublished,
           creationDate: new Date(),
           userId: user.id,
         },
       });
 
       if (newPost) {
-        res.status(201).json({ message: "Created post sucessfully" });
+        res.status(201).json({ message: "Created post sucessfully", post: newPost });
       } else {
         res
           .status(500)

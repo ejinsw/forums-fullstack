@@ -4,10 +4,12 @@
 import type { User } from '$lib/types';
 import type { LayoutServerLoad } from './$types';
 
-export const load = async ({ locals }: Parameters<LayoutServerLoad>[0]) => {
-	const user : User | null = locals.user as User;
+export const load = async ({ cookies, locals }: Parameters<LayoutServerLoad>[0]) => {
+	const user: User | null = locals.user as User;
+	const jwt = cookies.get('jwt');
 
 	return {
-		user // Pass the user data to the layout
+		user,
+		jwt
 	};
 };

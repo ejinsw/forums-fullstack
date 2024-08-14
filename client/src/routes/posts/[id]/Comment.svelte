@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import type { Comment as CommentType, User } from '$lib/types';
 	import { DateTime } from 'luxon';
 	import { onMount } from 'svelte';
@@ -26,7 +25,7 @@
 	$: upvoted = user && upvoteUsers ? upvoteUsers.includes(user.id) : false;
 	$: downvoted = user && downvoteUsers ? downvoteUsers.includes(user.id) : false;
 
-	$: commentScore = upvotes && downvotes ? upvotes.length - downvotes.length : "N/A";
+	$: commentScore = upvotes && downvotes ? upvotes.length - downvotes.length : 'N/A';
 
 	let showReply = false;
 	let replies: CommentType[] = [];
@@ -113,6 +112,10 @@
 	}
 
 	async function addReply() {
+		if (!user || !jwt) {
+			goto('/login');
+			return;
+		}
 		if (replyText === '') {
 			console.log('Invalid reply content');
 			return;
@@ -136,7 +139,10 @@
 	}
 
 	async function toggleUpvote() {
-        if (!user) return;
+		if (!user || !jwt) {
+			goto('/login');
+			return;
+		}
 		if (downvoted) toggleDownvote();
 
 		const response = await fetch(`http://localhost:3000/api/comments/${comment.id}/upvote`, {
@@ -162,7 +168,10 @@
 	}
 
 	async function toggleDownvote() {
-        if (!user) return;
+		if (!user || !jwt) {
+			goto('/login');
+			return;
+		}
 		if (upvoted) toggleUpvote();
 
 		const response = await fetch(`http://localhost:3000/api/comments/${comment.id}/downvote`, {
@@ -204,6 +213,15 @@
 		}
 	];
 
+	const otherCommentMenu = [
+		{
+			title: 'Share',
+			callback: function () {
+				console.log('Share');
+			}
+		}
+	];
+
 	// Fetch replies when the component mounts
 	onMount(() => {
 		getReplies();
@@ -219,7 +237,7 @@
 				>@{!comment.isDeleted ? comment.user.username : 'Deleted'}</a
 			>
 			<small class="text-xs ml-auto">{formatDate(comment.creationDate)}</small>
-			<Popup items={userCommentMenu} />
+			<Popup items={user && user.id === comment.userId ? userCommentMenu : otherCommentMenu} />
 		</div>
 		{#if isEditing}
 			<div class="flex items-center">
@@ -261,7 +279,7 @@
 			>
 		</span>
 	</li>
-	{#if user && showReply}
+	{#if showReply}
 		<div class="flex items-center text-sm">
 			<input
 				bind:value={replyText}
@@ -273,12 +291,6 @@
 			<button on:click={addReply} class="text-primary text-xl">
 				<MingcuteSendLine />
 			</button>
-		</div>
-	{:else if !user && showReply}
-		<div class="flex w-full justify-center">
-			<a class="shadow-lg px-4 py-1 rounded-xl bg-primary text-secondary-content" href="/login"
-				>Login</a
-			>
 		</div>
 	{/if}
 
