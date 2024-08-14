@@ -3,6 +3,11 @@
 	import MaterialSymbolsArrowBackIosNew from '~icons/material-symbols/arrow-back-ios-new';
 	import Comment from './Comment.svelte';
 
+    import UpvoteHollow from '~icons/bx/upvote';
+	import UpvoteFilled from '~icons/bx/bxs-upvote';
+	import DownvoteHollow from '~icons/bx/downvote';
+	import DownvoteFilled from '~icons/bx/bxs-downvote';
+
 	interface Data {
 		jwt: string;
 		post: Post;
@@ -12,19 +17,32 @@
 
 	export let data: Data;
 
+	$: user = data.user;
+
 	$: jwt = data.jwt;
 
 	$: post = data.post;
+
+	$: upvotes = post.upvotes;
+	$: downvotes = post.downvotes;
+
+	$: upvoteUsers = upvotes ? upvotes.map((upvote) => upvote.userId) : null;
+	$: downvoteUsers = downvotes ? downvotes.map((upvote) => upvote.userId) : null;
+
+	$: upvoted = user && upvoteUsers ? upvoteUsers.includes(user.id) : false;
+	$: downvoted = user && downvoteUsers ? downvoteUsers.includes(user.id) : false;
+
+	$: postScore = upvotes && downvotes ? upvotes.length - downvotes.length : 'N/A';
 
 	$: comments = post.comments;
 
 	let commentText: string = '';
 
 	async function postComment() {
-        if (commentText === "" ) {
-            console.log("Invalid comment format")
-            return;
-        }
+		if (commentText === '') {
+			console.log('Invalid comment format');
+			return;
+		}
 
 		const response = await fetch(`http://localhost:3000/api/posts/${post.id}/comments`, {
 			method: 'POST',
@@ -40,7 +58,59 @@
 			console.error('Error:', errorText);
 		}
 
-        location.reload();
+		location.reload();
+	}
+
+	async function toggleUpvote() {
+		if (!user) return;
+		if (downvoted) toggleDownvote();
+
+		const response = await fetch(`http://localhost:3000/api/posts/${post.id}/upvote`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${jwt}`
+			}
+		});
+
+		if (response.ok) {
+			if (upvoted) {
+				// Remove the upvote
+				upvotes = upvotes.filter((upvote) => upvote.userId !== user.id);
+			} else {
+				// Add the upvote
+				upvotes = [...upvotes, { id: 0, user, userId: user.id }];
+			}
+		} else {
+			const errorText = await response.json();
+			console.error('Error:', errorText);
+		}
+	}
+
+	async function toggleDownvote() {
+		if (!user) return;
+		if (upvoted) toggleUpvote();
+
+		const response = await fetch(`http://localhost:3000/api/posts/${post.id}/downvote`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${jwt}`
+			}
+		});
+
+		if (response.ok) {
+			if (downvoted) {
+				// Remove the downvote
+				downvotes = downvotes.filter((downvote) => downvote.userId !== user.id);
+			} else {
+				// Add the downvote
+				downvotes = [...downvotes, { id: 0, user, userId: user.id }];
+			}
+		} else {
+			const errorText = await response.json();
+			console.error('Error:', errorText);
+		}
 	}
 </script>
 
@@ -56,9 +126,26 @@
 		<p class="progress-primary">{post.content}</p>
 	</div>
 	<!-- Comment Box -->
-	<div class="border-y border-gray-200 py-4 px-12">
-		{#if data.user}
-			<div class="flex items-center text-sm">
+	<div class="border-y border-gray-200 flex gap-4 items-center py-4 px-12">
+		<div class="flex items-center gap-2 text-sm rounded-3xl bg-base-300 px-4 py-2 h-fit">
+			<button on:click={toggleUpvote}>
+				{#if upvoted}
+					<UpvoteFilled />
+				{:else}
+					<UpvoteHollow />
+				{/if}
+			</button>
+			<small class="text-xs">{postScore}</small>
+			<button on:click={toggleDownvote}>
+				{#if downvoted}
+					<DownvoteFilled />
+				{:else}
+					<DownvoteHollow />
+				{/if}
+			</button>
+		</div>
+		{#if user}
+			<div class="flex w-full items-center text-sm">
 				<input
 					bind:value={commentText}
 					type="text"
@@ -85,7 +172,7 @@
 
 	<ul class="mx-12 my-12 flex flex-col gap-4">
 		{#each comments as comment}
-			<Comment {comment} {jwt} user={data.user} />
+			<Comment {comment} {jwt} {user} />
 		{/each}
 	</ul>
 </div>

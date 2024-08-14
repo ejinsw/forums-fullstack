@@ -16,6 +16,8 @@ export const getAllPosts = expressAsyncHandler(
         include: {
           user: true,
           comments: true,
+          upvotes: true,
+          downvotes: true
         },
       });
 
@@ -53,8 +55,12 @@ export const getPostById = expressAsyncHandler(
           comments: {
             include: {
               user: true,
+              upvotes: true,
+              downvotes: true,
             },
           },
+          upvotes: true,
+          downvotes: true
         },
       });
 
@@ -181,6 +187,114 @@ export const createComment = expressAsyncHandler(
       }
     } catch (err) {
       res.status(500).json({ message: "Server error" });
+    }
+  }
+);
+
+export const toggleUpvote = expressAsyncHandler(
+  async (
+    req: Request<RequestBody, {}, {}>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      let postId: number | string = req.params.id;
+      const user = req.user as User;
+
+      if (!user) {
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+      }
+
+      postId = parseInt(postId, 10);
+      if (isNaN(postId)) {
+        res.status(400).json({ message: "Invalid id" });
+        return;
+      }
+
+      const upvote = await prisma.upvote.findUnique({
+        where: {
+          userId_postId: {
+            postId,
+            userId: user.id,
+          },
+        },
+      });
+
+      if (upvote) {
+        await prisma.upvote.delete({
+          where: {
+            id: upvote.id,
+          },
+        });
+        res.json({ message: "Upvote removed" });
+      } else {
+        // Upvote doesn't exist, so add it
+        await prisma.upvote.create({
+          data: {
+            userId: user.id,
+            postId: postId,
+          },
+        });
+        res.json({ message: "Upvote added" });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+);
+
+export const toggleDownvote = expressAsyncHandler(
+  async (
+    req: Request<RequestBody, {}, {}>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      let postId: number | string = req.params.id;
+      const user = req.user as User;
+
+      if (!user) {
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+      }
+
+      postId = parseInt(postId, 10);
+      if (isNaN(postId)) {
+        res.status(400).json({ message: "Invalid id" });
+        return;
+      }
+
+      const downvote = await prisma.downvote.findUnique({
+        where: {
+          userId_postId: {
+            postId,
+            userId: user.id,
+          },
+        },
+      });
+
+      if (downvote) {
+        await prisma.downvote.delete({
+          where: {
+            id: downvote.id,
+          },
+        });
+        res.json({ message: "Downvote removed" });
+      } else {
+        // Downvote doesn't exist, so add it
+        await prisma.downvote.create({
+          data: {
+            userId: user.id,
+            postId: postId,
+          },
+        });
+        res.json({ message: "Downvote added" });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
     }
   }
 );

@@ -35,6 +35,8 @@ export const getCommentById = expressAsyncHandler(
         include: {
           user: true,
           replies: true,
+          upvotes: true,
+          downvotes: true,
         },
       });
 
@@ -203,6 +205,7 @@ export const deleteComment = expressAsyncHandler(
         },
         include: {
           user: true,
+          replies: true,
         },
       });
 
@@ -213,6 +216,17 @@ export const deleteComment = expressAsyncHandler(
 
       if (existingComment?.userId !== user.id) {
         res.status(401).json({ message: "Unauthorized" });
+        return;
+      }
+
+      if (existingComment.replies && existingComment.replies.length === 0) {
+        await prisma.comment.delete({
+          where: {
+            id: commentId,
+          },
+        });
+
+        res.status(200).json({ message: "Comment deleted successfully" });
         return;
       }
 
@@ -269,6 +283,8 @@ export const getReplies = expressAsyncHandler(
           replies: {
             include: {
               user: true,
+              upvotes: true,
+              downvotes: true
             },
           },
         },
@@ -285,5 +301,113 @@ export const getReplies = expressAsyncHandler(
     } catch (err) {
       res.status(500).json({ message: "Server error" });
     }
+  }
+);
+
+export const toggleUpvote = expressAsyncHandler(
+  async (
+    req: Request<RequestBody, {}, {}>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      let commentId: number | string = req.params.id;
+      const user = req.user as User;
+
+      if (!user) {
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+      }
+
+      commentId = parseInt(commentId, 10);
+      if (isNaN(commentId)) {
+        res.status(400).json({ message: "Invalid id" });
+        return;
+      }
+
+      const upvote = await prisma.upvote.findUnique({
+        where: {
+          userId_commentId: {
+            commentId,
+            userId: user.id,
+          },
+        },
+      });
+
+      if (upvote) {
+        await prisma.upvote.delete({
+          where: {
+            id: upvote.id,
+          },
+        });
+        res.json({ message: "Upvote removed" });
+      } else {
+        // Upvote doesn't exist, so add it
+        await prisma.upvote.create({
+          data: {
+            userId: user.id,
+            commentId: commentId,
+          },
+        });
+        res.json({ message: "Upvote added" });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+);
+
+export const toggleDownvote = expressAsyncHandler(
+  async (
+    req: Request<RequestBody, {}, {}>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+        let commentId: number | string = req.params.id;
+        const user = req.user as User;
+  
+        if (!user) {
+          res.status(401).json({ message: "Unauthorized" });
+          return;
+        }
+  
+        commentId = parseInt(commentId, 10);
+        if (isNaN(commentId)) {
+          res.status(400).json({ message: "Invalid id" });
+          return;
+        }
+  
+        const downvote = await prisma.downvote.findUnique({
+          where: {
+            userId_commentId: {
+              commentId,
+              userId: user.id,
+            },
+          },
+        });
+  
+        if (downvote) {
+          await prisma.downvote.delete({
+            where: {
+              id: downvote.id,
+            },
+          });
+          res.json({ message: "Downvote removed" });
+        } else {
+          // Downvote doesn't exist, so add it
+          await prisma.downvote.create({
+            data: {
+              userId: user.id,
+              commentId: commentId,
+            },
+          });
+          res.json({ message: "Downvote added" });
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal Server Error" });
+      }
   }
 );

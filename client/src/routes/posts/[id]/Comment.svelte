@@ -3,18 +3,34 @@
 	import type { Comment as CommentType, User } from '$lib/types';
 	import { DateTime } from 'luxon';
 	import { onMount } from 'svelte';
-	import MingcuteSendLine from '~icons/mingcute/send-line';
 	import Popup from '$lib/components/Popup.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+
+	import MingcuteSendLine from '~icons/mingcute/send-line';
+	import UpvoteHollow from '~icons/bx/upvote';
+	import UpvoteFilled from '~icons/bx/bxs-upvote';
+	import DownvoteHollow from '~icons/bx/downvote';
+	import DownvoteFilled from '~icons/bx/bxs-downvote';
 
 	export let comment: CommentType;
 	export let user: User;
 	export let jwt: string;
 
+	$: upvotes = comment.upvotes;
+	$: downvotes = comment.downvotes;
+
+	$: upvoteUsers = upvotes ? upvotes.map((upvote) => upvote.userId) : null;
+	$: downvoteUsers = downvotes ? downvotes.map((upvote) => upvote.userId) : null;
+
+	$: upvoted = user && upvoteUsers ? upvoteUsers.includes(user.id) : false;
+	$: downvoted = user && downvoteUsers ? downvoteUsers.includes(user.id) : false;
+
+	$: commentScore = upvotes && downvotes ? upvotes.length - downvotes.length : "N/A";
+
 	let showReply = false;
 	let replies: CommentType[] = [];
-	let replyText: string  = "";
+	let replyText: string = '';
 
 	let isEditing = false; // Track edit mode
 	let editedContent = comment.content; // Store edited content
@@ -97,11 +113,10 @@
 	}
 
 	async function addReply() {
-        if (replyText === "") {
-            console.log("Invalid reply content")
-            return;
-        }
-
+		if (replyText === '') {
+			console.log('Invalid reply content');
+			return;
+		}
 
 		const response = await fetch(`http://localhost:3000/api/comments/${comment.id}`, {
 			method: 'POST',
@@ -118,6 +133,58 @@
 		}
 
 		location.reload();
+	}
+
+	async function toggleUpvote() {
+        if (!user) return;
+		if (downvoted) toggleDownvote();
+
+		const response = await fetch(`http://localhost:3000/api/comments/${comment.id}/upvote`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${jwt}`
+			}
+		});
+
+		if (response.ok) {
+			if (upvoted) {
+				// Remove the upvote
+				upvotes = upvotes.filter((upvote) => upvote.userId !== user.id);
+			} else {
+				// Add the upvote
+				upvotes = [...upvotes, { id: 0, user, userId: user.id }];
+			}
+		} else {
+			const errorText = await response.json();
+			console.error('Error:', errorText);
+		}
+	}
+
+	async function toggleDownvote() {
+        if (!user) return;
+		if (upvoted) toggleUpvote();
+
+		const response = await fetch(`http://localhost:3000/api/comments/${comment.id}/downvote`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${jwt}`
+			}
+		});
+
+		if (response.ok) {
+			if (downvoted) {
+				// Remove the downvote
+				downvotes = downvotes.filter((downvote) => downvote.userId !== user.id);
+			} else {
+				// Add the downvote
+				downvotes = [...downvotes, { id: 0, user, userId: user.id }];
+			}
+		} else {
+			const errorText = await response.json();
+			console.error('Error:', errorText);
+		}
 	}
 
 	const userCommentMenu = [
@@ -169,11 +236,30 @@
 				{!comment.isDeleted ? comment.content : '[This comment has been deleted]'}
 			</p>
 		{/if}
-		<button
-			class="text-xs text-primary disabled:text-gray-500"
-			disabled={comment.isDeleted}
-			on:click={() => (showReply = !showReply)}>Reply</button
-		>
+		<span class="flex gap-2">
+			<div class="flex gap-2 text-sm rounded-xl bg-base-300 px-2 py-1">
+				<button on:click={toggleUpvote}>
+					{#if upvoted}
+						<UpvoteFilled />
+					{:else}
+						<UpvoteHollow />
+					{/if}
+				</button>
+				<small class="text-xs">{commentScore}</small>
+				<button on:click={toggleDownvote}>
+					{#if downvoted}
+						<DownvoteFilled />
+					{:else}
+						<DownvoteHollow />
+					{/if}
+				</button>
+			</div>
+			<button
+				class="text-xs text-primary disabled:text-gray-500"
+				disabled={comment.isDeleted}
+				on:click={() => (showReply = !showReply)}>Reply</button
+			>
+		</span>
 	</li>
 	{#if user && showReply}
 		<div class="flex items-center text-sm">
@@ -188,7 +274,7 @@
 				<MingcuteSendLine />
 			</button>
 		</div>
-	{:else if !user}
+	{:else if !user && showReply}
 		<div class="flex w-full justify-center">
 			<a class="shadow-lg px-4 py-1 rounded-xl bg-primary text-secondary-content" href="/login"
 				>Login</a
@@ -199,7 +285,7 @@
 	{#if replies && replies.length > 0}
 		<div class="flex flex-col pl-6 pt-2 gap-2 border-l">
 			{#each replies as c}
-				<svelte:self comment={c} {jwt} user={c.user} />
+				<svelte:self comment={c} {jwt} {user} />
 			{/each}
 		</div>
 	{/if}

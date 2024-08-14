@@ -24,9 +24,31 @@ export interface Comment {
 	id: number;
 	content: string;
 	creationDate: string;
-	user: User
+	user: User;
 	replies: Comment[];
 	userId: number;
 	postId: number;
 	isDeleted: boolean;
+	upvotes: Upvote[];
+	downvotes: Downvote[];
+}
+
+export interface Upvote {
+	id: number;
+	userId: number;
+	commentId?: number;
+	postId?: number;
+	user: User;
+	post?: Post;
+	comment?: Comment;
+}
+
+export interface Downvote {
+	id: number;
+	userId: number;
+	commentId?: number;
+	postId?: number;
+	user: User;
+	post?: Post;
+	comment?: Comment;
 }

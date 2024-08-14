@@ -53,7 +53,7 @@ model Comment {
   postId Int?
   post   Post? @relation(fields: [postId], references: [id], onDelete: Cascade)
   userId Int
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User  @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   upvotes   Upvote[]
   downvotes Downvote[]
@@ -79,6 +79,7 @@ model Upvote {
   Post    Post?    @relation(fields: [postId], references: [id])
 
   @@unique([userId, commentId]) // A user can only upvote a comment once
+  @@unique([userId, postId])
   @@map("upvotes")
 }
 
@@ -93,5 +94,6 @@ model Downvote {
   Post    Post?    @relation(fields: [postId], references: [id])
 
   @@unique([userId, commentId]) // A user can only downvote a comment once
+  @@unique([userId, postId])
   @@map("downvotes")
 }
