@@ -35,6 +35,7 @@ export interface Comment {
 	upvotes: Upvote[];
 	downvotes: Downvote[];
 	parent?: Comment
+	parentId?: number
 }
 
 export interface Upvote {
