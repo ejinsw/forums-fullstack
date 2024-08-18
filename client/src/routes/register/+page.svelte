@@ -41,10 +41,6 @@
 				required
 			/>
 		</div>
-		<div class="w-full mb-4 flex">
-			<small class="w-full text-xs">Sign up to be an author?</small>
-			<input type="checkbox" name="isAuthor" id="isAuthor" class="ml-auto rounded-lg" required />
-		</div>
 		<button
 			type="submit"
 			class="w-full bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded-lg">Sign Up</button

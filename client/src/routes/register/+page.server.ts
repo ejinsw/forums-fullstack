@@ -8,7 +8,6 @@ export const actions = {
 		const name = formData.get('name') as string;
 		const username = formData.get('username') as string;
 		const password = formData.get('password') as string;
-		const isAuthor = formData.has('isAuthor') ? true : false;
 
 		try {
 			const response = await fetch('http://localhost:3000/api/auth/register', {
@@ -16,7 +15,7 @@ export const actions = {
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify({ name, username, password, isAuthor })
+				body: JSON.stringify({ name, username, password, isAuthor: true })
 			});
 
 			if (!response.ok) {
