@@ -88,7 +88,7 @@
 </script>
 
 {#if post.published}
-	<div class="group p-8 border rounded-lg hover:bg-base-300 flex flex-col gap-2">
+	<div class="p-8 border rounded-lg hover:bg-base-300 flex flex-col gap-2">
 		<a class="flex flex-col" href={`/posts/${post.id}`}>
 			<a class="text-sm mb-2 hover:text-primary" href={`/profile/${post.userId}`}
 				>@{post.user.username}</a

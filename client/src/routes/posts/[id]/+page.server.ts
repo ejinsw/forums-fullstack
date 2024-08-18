@@ -1,13 +1,9 @@
-import { error, fail, redirect, type Actions } from '@sveltejs/kit';
+import { error, fail, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { goto } from '$app/navigation';
 import { env } from '$env/dynamic/public';
 
-export const load: PageServerLoad = async ({ fetch, params, url, locals }) => {
-	if (locals.user && parseInt(params.id, 10) === locals.user.id) {
-		throw redirect(302, '/profile');
-	}
-
+export const load: PageServerLoad = async ({ fetch, params, url }) => {
 	const route = url.searchParams.get('redirect');
 
 	const res = await fetch(`${env.PUBLIC_API_HOST}/api/posts/${params.id}`);
