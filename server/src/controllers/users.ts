@@ -63,9 +63,26 @@ export const getUserById = expressAsyncHandler(
                   user: true,
                 },
               },
+              user: true,
             },
           },
-          comments: true,
+          comments: {
+            include: {
+              user: true,
+              upvotes: true,
+              downvotes: true,
+              post: {
+                include: {
+                  user: true,
+                },
+              },
+              parent: {
+                include: {
+                  user: true,
+                },
+              },
+            },
+          },
         },
       });
 

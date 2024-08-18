@@ -14,6 +14,7 @@
 	},
 	"devDependencies": {
 		"@iconify-json/bx": "^1.1.11",
+		"@iconify-json/iconamoon": "^1.1.5",
 		"@iconify-json/lets-icons": "^1.1.3",
 		"@iconify-json/mage": "^1.1.1",
 		"@iconify-json/material-symbols": "^1.1.85",

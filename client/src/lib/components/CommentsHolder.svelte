@@ -1,7 +1,6 @@
 <script lang="ts">
-	import type { Post, User } from '$lib/types';
-	import { onMount } from 'svelte';
-	import PostCard from './PostCard.svelte';
+	import type { Comment, User } from '$lib/types';
+	import CommentCard from './CommentCard.svelte';
 	import { DateTime } from 'luxon';
 
 	enum SortBy {
@@ -9,16 +8,14 @@
 		Hot
 	}
 
-	export let title: string = '';
-	export let items: Post[] = [];
-	export let link: string = '/';
+	export let items: Comment[] = [];
 	export let sortBy: SortBy = SortBy.Date;
 	export let user: User;
 	export let jwt: string;
-	
+
 	let sortedItems = items;
 
-	function sortItems(items: Post[], sortBy: SortBy) {
+	function sortItems(items: Comment[], sortBy: SortBy) {
 		switch (sortBy) {
 			case SortBy.Date:
 				sortedItems = [...items].sort(
@@ -37,14 +34,13 @@
 </script>
 
 <div class="border flex flex-col bg-base-100 p-4">
-	{#if title !== ''}
-		<a class="mb-4 text-2xl" href={link}>{title}</a>
-	{/if}
 	<ul class="flex flex-col gap-2">
-		{#each sortedItems as post}
-			<li>
-				<PostCard {post} {user} {jwt}/>
-			</li>
+		{#each sortedItems as comment}
+			{#if !comment.isDeleted}
+				<li>
+					<CommentCard {comment} {user} {jwt} />
+				</li>
+			{/if}
 		{/each}
 	</ul>
 </div>

@@ -30,9 +30,11 @@ export interface Comment {
 	replies: Comment[];
 	userId: number;
 	postId: number;
+	post: Post
 	isDeleted: boolean;
 	upvotes: Upvote[];
 	downvotes: Downvote[];
+	parent?: Comment
 }
 
 export interface Upvote {

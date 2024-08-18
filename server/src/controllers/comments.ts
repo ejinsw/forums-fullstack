@@ -65,7 +65,7 @@ export const createReply = expressAsyncHandler(
         return;
       }
 
-      const { content } = req.body;
+      const { content, postId } = req.body;
 
       let commentId: number | string = req.params.id;
 
@@ -86,6 +86,7 @@ export const createReply = expressAsyncHandler(
           creationDate: new Date(),
           userId: user.id,
           parentId: commentId,
+          postId
         },
       });
 

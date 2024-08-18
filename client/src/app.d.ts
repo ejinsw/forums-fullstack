@@ -8,7 +8,6 @@ declare global {
 		// interface Error {}
 		interface Locals {
 			user: User | null
-			jwt?: string
 		}
 		// interface PageData {}
 		// interface PageState {}

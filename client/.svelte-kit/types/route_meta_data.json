@@ -24,6 +24,10 @@
 		"src/routes/posts/[id]/+page.server.ts",
 		"src/routes/+layout.server.ts"
 	],
+	"/profile/[id]": [
+		"src/routes/profile/[id]/+page.server.ts",
+		"src/routes/+layout.server.ts"
+	],
 	"/register": [
 		"src/routes/register/+page.server.ts",
 		"src/routes/+layout.server.ts"
