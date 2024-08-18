@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "prisma db push --skip-generate && tsc && node dist/app.js",
-    "dev": "nodemon"
+    "start": "prisma db push --skip-generate && node dist/app.js",
+    "dev": "tsc && nodemon"
   },
   "keywords": [],
   "author": "",
