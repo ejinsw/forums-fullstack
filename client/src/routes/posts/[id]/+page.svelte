@@ -177,7 +177,9 @@
 
 	<ul class="mx-12 my-12 flex flex-col gap-4">
 		{#each comments as comment}
-			<Comment {comment} {jwt} {user} />
+			{#if !comment.parent}
+				<Comment {comment} {jwt} {user} />
+			{/if}
 		{/each}
 	</ul>
 </div>
