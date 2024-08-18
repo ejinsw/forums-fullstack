@@ -1,4 +1,5 @@
 // src/routes/register/+page.server.ts
+import { env } from '$env/dynamic/public';
 import { fail } from '@sveltejs/kit';
 
 export const actions = {
@@ -10,7 +11,7 @@ export const actions = {
 		const password = formData.get('password') as string;
 
 		try {
-			const response = await fetch('http://localhost:3000/api/auth/register', {
+			const response = await fetch(`${env.PUBLIC_API_HOST}/api/auth/register`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'

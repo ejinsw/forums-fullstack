@@ -1,7 +1,8 @@
 import type { Handle } from '@sveltejs/kit';
 import { parse } from 'cookie';
 import jwt from 'jsonwebtoken';
-import { env } from '$env/dynamic/private';
+import { env } from '$env/dynamic/public';
+import { JWT_SECRET } from '$env/static/private';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const { headers } = event.request;
@@ -12,7 +13,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 		const token = cookies.jwt;
 
 		try {
-			const jwtUser = jwt.verify(token, env.JWT_SECRET);
+			const jwtUser = jwt.verify(token, JWT_SECRET);
 			if (typeof jwtUser === 'string') {
 				throw new Error('Something went wrong');
 			}
@@ -21,7 +22,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 				throw new Error("Sub doesn't exist");
 			}
 
-			const res = await fetch(`http://localhost:3000/api/users/${jwtUser.sub}`);
+			const res = await fetch(`${env.PUBLIC_API_HOST}/api/users/${jwtUser.sub}`);
 
 			if (!res.ok) {
 				event.locals.user = null;

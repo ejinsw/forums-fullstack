@@ -2,6 +2,7 @@
 // src/routes/register/+page.server.ts
 import { fail, redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
+import { env } from '$env/dynamic/public';
 
 export const load = (event: Parameters<PageServerLoad>[0]) => {
 	const user = event.locals.user;
@@ -27,7 +28,7 @@ export const actions = {
 		}
 
 		try {
-			const response = await fetch('http://localhost:3000/api/auth/login', {
+			const response = await fetch(`${env.PUBLIC_API_HOST}/api/auth/login`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'

@@ -19,7 +19,7 @@ export const dictionary = {
 		"/login": [~3],
 		"/posts/create": [5],
 		"/posts/[id]": [~4],
-		"/profile": [6],
+		"/profile": [~6],
 		"/profile/[id]": [~7],
 		"/register": [~8]
 	};

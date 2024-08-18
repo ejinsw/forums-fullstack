@@ -1,10 +1,11 @@
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
+import { env } from '$env/dynamic/public';
 
 export const load: PageServerLoad = async ({ fetch, params, url }) => {
 	const route = url.searchParams.get('redirect');
 
-	const res = await fetch(`http://localhost:3000/api/users/${params.id}`);
+	const res = await fetch(`${env.PUBLIC_API_HOST}/api/users/${params.id}`);
 
 	if (!res.ok) {
 		throw error(500, "Couldn't fetch user");

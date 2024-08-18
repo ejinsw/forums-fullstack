@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const posts_1 = require("../controllers/posts");
+const passport_1 = require("../config/passport");
+const router = (0, express_1.Router)();
+router.get("/", posts_1.getAllPosts);
+router.post("/", passport_1.authenticate, posts_1.createPost);
+router.get("/:id", posts_1.getPostById);
+router.get("/:id/comments", posts_1.getAllComments);
+router.post("/:id/comments", passport_1.authenticate, posts_1.createComment);
+router.post("/:id/upvote", passport_1.authenticate, posts_1.toggleUpvote);
+router.post("/:id/downvote", passport_1.authenticate, posts_1.toggleDownvote);
+exports.default = router;

@@ -1,6 +1,7 @@
+import { env } from '$env/dynamic/public';
 import { redirect, type RequestHandler } from '@sveltejs/kit';
 
-export const GET: RequestHandler = async ({ cookies, request, params, url, fetch }) => {
+export const GET: RequestHandler = async ({ cookies, params, url, fetch }) => {
 	const commentId = params.id;
 
 	// Extract the content and redirectTo query parameters from the URL
@@ -16,7 +17,7 @@ export const GET: RequestHandler = async ({ cookies, request, params, url, fetch
 
 	try {
 		// Make a PUT request to your REST API to update the comment
-		const response = await fetch(`http://localhost:3000/api/comments/${commentId}`, {
+		const response = await fetch(`${env.PUBLIC_API_HOST}/api/comments/${commentId}`, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { env } from '$env/dynamic/public';
 
 	export let data;
 
@@ -19,7 +20,7 @@
 			return;
 		}
 
-		const response = await fetch(`http://localhost:3000/api/posts`, {
+		const response = await fetch(`${env.PUBLIC_API_HOST}/api/posts`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',

@@ -11,6 +11,7 @@
 	import UpvoteFilled from '~icons/bx/bxs-upvote';
 	import DownvoteHollow from '~icons/bx/downvote';
 	import DownvoteFilled from '~icons/bx/bxs-downvote';
+	import { env } from '$env/dynamic/public';
 
 	export let comment: CommentType;
 	export let user: User;
@@ -65,7 +66,7 @@
 
 	async function getReplies() {
 		try {
-			const res = await fetch(`http://localhost:3000/api/comments/${comment.id}/replies`);
+			const res = await fetch(`${env.PUBLIC_API_HOST}/api/comments/${comment.id}/replies`);
 			if (!res.ok) {
 				return;
 			}
@@ -97,7 +98,7 @@
 
 	async function deleteComment() {
 		try {
-			const response = await fetch(`http://localhost:3000/api/comments/${comment.id}`, {
+			const response = await fetch(`${env.PUBLIC_API_HOST}/api/comments/${comment.id}`, {
 				method: 'DELETE',
 				headers: {
 					'Content-Type': 'application/json',
@@ -121,7 +122,7 @@
 			return;
 		}
 
-		const response = await fetch(`http://localhost:3000/api/comments/${comment.id}`, {
+		const response = await fetch(`${env.PUBLIC_API_HOST}/api/comments/${comment.id}`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -145,7 +146,7 @@
 		}
 		if (downvoted) toggleDownvote();
 
-		const response = await fetch(`http://localhost:3000/api/comments/${comment.id}/upvote`, {
+		const response = await fetch(`${env.PUBLIC_API_HOST}/api/comments/${comment.id}/upvote`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -174,7 +175,7 @@
 		}
 		if (upvoted) toggleUpvote();
 
-		const response = await fetch(`http://localhost:3000/api/comments/${comment.id}/downvote`, {
+		const response = await fetch(`${env.PUBLIC_API_HOST}/api/comments/${comment.id}/downvote`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',

@@ -26,12 +26,6 @@
 	$: user = data.user;
 
 	$: jwt = data.jwt;
-
-    onMount(() => {
-        if (!user || !jwt) {
-            goto('/login')
-        }
-    })
 </script>
 
 <div class="prose bg-base-100 min-h-screen m-4 border">

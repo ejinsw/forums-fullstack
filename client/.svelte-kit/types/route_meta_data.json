@@ -25,6 +25,7 @@
 		"src/routes/+layout.server.ts"
 	],
 	"/profile": [
+		"src/routes/profile/+page.server.ts",
 		"src/routes/+layout.server.ts"
 	],
 	"/profile/[id]": [
