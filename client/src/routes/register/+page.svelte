@@ -33,7 +33,7 @@
 		</div>
 		<div class="w-full mb-4 flex flex-col justify-center">
 			<input
-				type="text"
+				type="password"
 				placeholder="Password"
 				name="password"
 				id="password"
