@@ -25,6 +25,7 @@
     "passport-jwt": "^4.0.1"
   },
   "devDependencies": {
+    "@flydotio/dockerfile": "^0.5.9",
     "@types/bcryptjs": "^2.4.6",
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",
@@ -36,8 +37,8 @@
     "i": "^0.3.7",
     "nodemon": "^3.1.4",
     "npm": "^10.8.2",
+    "prisma": "^5.17.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.4",
-    "prisma": "^5.17.0"
+    "typescript": "^5.5.4"
   }
 }
