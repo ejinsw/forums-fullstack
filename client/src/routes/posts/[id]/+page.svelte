@@ -157,7 +157,7 @@
 			</button>
 		</div>
 
-		<div class="flex w-full items-center text-sm">
+		<div class="flex w-full items-center text-sm overflow-auto">
 			<input
 				bind:value={commentText}
 				type="text"
