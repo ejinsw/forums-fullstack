@@ -12,7 +12,7 @@
 
 	export let post: Post;
 	export let user: User;
-	export let jwt: string;
+	export let jwt: string | undefined;
 
 	$: upvotes = post.upvotes;
 	$: downvotes = post.downvotes;

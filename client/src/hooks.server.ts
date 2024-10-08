@@ -22,7 +22,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 				throw new Error("Sub doesn't exist");
 			}
 
-			const res = await fetch(`${env.PUBLIC_API_HOST}/api/users/${jwtUser.sub}`);
+			const res = await fetch(`${env?.PUBLIC_API_HOST}/api/users/${jwtUser.sub}`);
 
 			if (!res.ok) {
 				event.locals.user = null;

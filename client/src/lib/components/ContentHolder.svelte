@@ -14,7 +14,7 @@
 	export let link: string = '/';
 	export let sortBy: SortBy = SortBy.Date;
 	export let user: User;
-	export let jwt: string;
+	export let jwt: string | undefined;
 	
 	let sortedItems = items;
 
