@@ -6,7 +6,7 @@ import type { LayoutServerLoad } from './$types';
 
 export const load = async ({ cookies, locals }: Parameters<LayoutServerLoad>[0]) => {
 	const user: User | null = locals.user as User;
-	const jwt: string | undefined = cookies.get('jwt') || cookies.get('_vercel_jwt');
+	const jwt: string | undefined = cookies.get('jwt') ?? cookies.get('_vercel_jwt') ?? "";
 
 	return {
 		user,

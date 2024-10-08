@@ -1,0 +1,1 @@
+function i(n){return(n==null?void 0:n.length)!==void 0?n:Array.from(n)}function p(n,d){const u={},t={},o={$$scope:1};let e=n.length;for(;e--;){const f=n[e],s=d[e];if(s){for(const c in f)c in s||(t[c]=1);for(const c in s)o[c]||(u[c]=s[c],o[c]=1);n[e]=s}else for(const c in f)o[c]=1}for(const f in t)f in u||(u[f]=void 0);return u}export{i as e,p as g};
