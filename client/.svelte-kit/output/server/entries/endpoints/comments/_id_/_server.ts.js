@@ -14,7 +14,7 @@ const POST = async ({ cookies, request, params, url, fetch }) => {
   try {
     let response;
     if (formType === "comment") {
-      response = await fetch(`${public_env.PUBLIC_API_HOST}/api/posts/${params.id}/comments`, {
+      response = await fetch(`${public_PUBLIC_API_HOST}/api/posts/${params.id}/comments`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -24,7 +24,7 @@ const POST = async ({ cookies, request, params, url, fetch }) => {
       });
     } else if (formType === "reply") {
       const parentId = formData.get("parentId");
-      response = await fetch(`${public_env.PUBLIC_API_HOST}/api/comments/${parentId}`, {
+      response = await fetch(`${public_PUBLIC_API_HOST}/api/comments/${parentId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

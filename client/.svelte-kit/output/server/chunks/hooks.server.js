@@ -15,7 +15,7 @@ const handle = async ({ event, resolve }) => {
       if (!jwtUser.sub) {
         throw new Error("Sub doesn't exist");
       }
-      const res = await fetch(`${public_env?.PUBLIC_API_HOST}/api/users/${jwtUser.sub}`);
+      const res = await fetch(`${public_PUBLIC_API_HOST}/api/users/${jwtUser.sub}`);
       if (!res.ok) {
         event.locals.user = null;
         throw new Error("User not found");

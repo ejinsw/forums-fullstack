@@ -1,4 +1,4 @@
-import { env } from '$env/dynamic/public';
+import { PUBLIC_API_HOST } from '$env/static/public';
 import { redirect, type RequestHandler } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({ cookies, request, params, url, fetch }) => {
@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ cookies, request, params, url, fetc
 	try {
 		let response;
 		if (formType === 'comment') {
-			response = await fetch(`${env.PUBLIC_API_HOST}/api/posts/${params.id}/comments`, {
+			response = await fetch(`${PUBLIC_API_HOST}/api/posts/${params.id}/comments`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ cookies, request, params, url, fetc
 			});
 		} else if (formType === 'reply') {
 			const parentId = formData.get('parentId') as string;
-			response = await fetch(`${env.PUBLIC_API_HOST}/api/comments/${parentId}`, {
+			response = await fetch(`${PUBLIC_API_HOST}/api/comments/${parentId}`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',

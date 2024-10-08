@@ -8,7 +8,7 @@
 	import DownvoteHollow from '~icons/bx/downvote';
 	import DownvoteFilled from '~icons/bx/bxs-downvote';
 	import { goto } from '$app/navigation';
-	import { env } from '$env/dynamic/public';
+	import { PUBLIC_API_HOST } from '$env/static/public';
 
 	interface Data {
 		jwt: string;
@@ -50,7 +50,7 @@
 			return;
 		}
 
-		const response = await fetch(`${env.PUBLIC_API_HOST}/api/posts/${post.id}/comments`, {
+		const response = await fetch(`${PUBLIC_API_HOST}/api/posts/${post.id}/comments`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -74,7 +74,7 @@
 		}
 		if (downvoted) toggleDownvote();
 
-		const response = await fetch(`${env.PUBLIC_API_HOST}/api/posts/${post.id}/upvote`, {
+		const response = await fetch(`${PUBLIC_API_HOST}/api/posts/${post.id}/upvote`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -103,7 +103,7 @@
 		}
 		if (upvoted) toggleUpvote();
 
-		const response = await fetch(`${env.PUBLIC_API_HOST}/api/posts/${post.id}/downvote`, {
+		const response = await fetch(`${PUBLIC_API_HOST}/api/posts/${post.id}/downvote`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',

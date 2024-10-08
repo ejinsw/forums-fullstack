@@ -46,7 +46,7 @@ const Comment = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   $page.url.pathname;
   async function deleteComment() {
     try {
-      const response = await fetch(`${public_env.PUBLIC_API_HOST}/api/comments/${comment.id}`, {
+      const response = await fetch(`${public_PUBLIC_API_HOST}/api/comments/${comment.id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

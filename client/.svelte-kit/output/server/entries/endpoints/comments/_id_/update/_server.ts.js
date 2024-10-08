@@ -11,7 +11,7 @@ const GET = async ({ cookies, params, url, fetch }) => {
     });
   }
   try {
-    const response = await fetch(`${public_env.PUBLIC_API_HOST}/api/comments/${commentId}`, {
+    const response = await fetch(`${public_PUBLIC_API_HOST}/api/comments/${commentId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

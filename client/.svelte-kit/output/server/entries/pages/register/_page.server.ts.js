@@ -7,7 +7,7 @@ const actions = {
     const username = formData.get("username");
     const password = formData.get("password");
     try {
-      const response = await fetch(`${public_env.PUBLIC_API_HOST}/api/auth/register`, {
+      const response = await fetch(`${public_PUBLIC_API_HOST}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

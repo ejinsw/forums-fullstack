@@ -5,7 +5,7 @@ const load = async ({ fetch, params, url, locals }) => {
     throw redirect(302, "/profile");
   }
   const route = url.searchParams.get("redirect");
-  const res = await fetch(`${public_env.PUBLIC_API_HOST}/api/users/${params.id}`);
+  const res = await fetch(`${public_PUBLIC_API_HOST}/api/users/${params.id}`);
   if (!res.ok) {
     throw error(500, "Couldn't fetch user");
   }

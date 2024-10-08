@@ -19,7 +19,7 @@ const actions = {
       });
     }
     try {
-      const response = await fetch(`${public_env.PUBLIC_API_HOST}/api/auth/login`, {
+      const response = await fetch(`${public_PUBLIC_API_HOST}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

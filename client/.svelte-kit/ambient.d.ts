@@ -226,7 +226,7 @@ declare module '$env/dynamic/private' {
  * Dynamic environment variables cannot be used during prerendering.
  * 
  * ```ts
- * import { env } from '$env/dynamic/public';
+ * import { PUBLIC_API_HOST } from '$env/static/public';
  * console.log(env.PUBLIC_DEPLOYMENT_SPECIFIC_VARIABLE);
  * ```
  */

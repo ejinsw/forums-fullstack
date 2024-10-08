@@ -1,4 +1,4 @@
-import { env } from '$env/dynamic/public';
+import { PUBLIC_API_HOST } from '$env/static/public';
 import { redirect, type RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ cookies, params, url, fetch }) => {
@@ -17,7 +17,7 @@ export const GET: RequestHandler = async ({ cookies, params, url, fetch }) => {
 
 	try {
 		// Make a PUT request to your REST API to update the comment
-		const response = await fetch(`${env.PUBLIC_API_HOST}/api/comments/${commentId}`, {
+		const response = await fetch(`${PUBLIC_API_HOST}/api/comments/${commentId}`, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',

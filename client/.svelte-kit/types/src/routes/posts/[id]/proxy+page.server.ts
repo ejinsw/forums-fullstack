@@ -2,12 +2,12 @@
 import { error, fail, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { goto } from '$app/navigation';
-import { env } from '$env/dynamic/public';
+import { PUBLIC_API_HOST } from '$env/static/public';
 
 export const load = async ({ fetch, params, url }: Parameters<PageServerLoad>[0]) => {
 	const route = url.searchParams.get('redirect');
 
-	const res = await fetch(`${env.PUBLIC_API_HOST}/api/posts/${params.id}`);
+	const res = await fetch(`${PUBLIC_API_HOST}/api/posts/${params.id}`);
 
 	if (!res.ok) {
 		throw error(500, "Couldn't fetch post");
@@ -39,7 +39,7 @@ export const actions = {
 		try {
 			if (formType == 'comment') {
 				const response = await fetch(
-					`${env.PUBLIC_API_HOST}/api/posts/${event.params.id}/comments`,
+					`${PUBLIC_API_HOST}/api/posts/${event.params.id}/comments`,
 					{
 						method: 'POST',
 						headers: {
@@ -58,7 +58,7 @@ export const actions = {
 			} else if (formType == 'reply') {
 				const parentId = formData.get('parentId') as string;
 
-				const response = await fetch(`${env.PUBLIC_API_HOST}/api/comments/${parentId}`, {
+				const response = await fetch(`${PUBLIC_API_HOST}/api/comments/${parentId}`, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',

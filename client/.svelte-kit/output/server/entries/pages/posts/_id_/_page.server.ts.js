@@ -3,7 +3,7 @@ import { g as goto } from "../../../../chunks/client.js";
 import { p as public_env } from "../../../../chunks/shared-server.js";
 const load = async ({ fetch: fetch2, params, url }) => {
   const route = url.searchParams.get("redirect");
-  const res = await fetch2(`${public_env.PUBLIC_API_HOST}/api/posts/${params.id}`);
+  const res = await fetch2(`${public_PUBLIC_API_HOST}/api/posts/${params.id}`);
   if (!res.ok) {
     throw error(500, "Couldn't fetch post");
   }
@@ -27,7 +27,7 @@ const actions = {
     try {
       if (formType == "comment") {
         const response = await fetch(
-          `${public_env.PUBLIC_API_HOST}/api/posts/${event.params.id}/comments`,
+          `${public_PUBLIC_API_HOST}/api/posts/${event.params.id}/comments`,
           {
             method: "POST",
             headers: {
@@ -44,7 +44,7 @@ const actions = {
         }
       } else if (formType == "reply") {
         const parentId = formData.get("parentId");
-        const response = await fetch(`${public_env.PUBLIC_API_HOST}/api/comments/${parentId}`, {
+        const response = await fetch(`${public_PUBLIC_API_HOST}/api/comments/${parentId}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
