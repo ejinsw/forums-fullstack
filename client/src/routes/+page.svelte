@@ -7,6 +7,6 @@
 </script>
 
 <div class="m-4 flex flex-col gap-4">
-	<!-- <ContentHolder items={data.posts} title="Recent Posts" link="/posts/recent" user={data.user} jwt={data.jwt} /> -->
+	<ContentHolder items={data.posts} title="Recent Posts" link="/posts/recent" user={data.user} jwt={data.jwt} />
 	
 </div>
