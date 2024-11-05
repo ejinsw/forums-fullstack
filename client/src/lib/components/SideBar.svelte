@@ -146,7 +146,7 @@
 
 <div
 	class={clsx(
-		'absolute top-0 left-0 md:hidden block w-screen h-screen bg-black/50 transition-all duration-300 ease-in-out',
+		'absolute top-0 left-0 md:hidden block w-screen h-screen bg-black/50 transition-all duration-300 ease-in-out z-50',
 		open ? 'translate-x-0' : '-translate-x-full'
 	)}
 >
