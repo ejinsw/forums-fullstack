@@ -8,7 +8,9 @@ const express_async_handler_1 = __importDefault(require("express-async-handler")
 const client_1 = __importDefault(require("../config/client"));
 exports.getAllUsers = (0, express_async_handler_1.default)(async (req, res, next) => {
     try {
+        console.log("Getting all users...");
         const users = await client_1.default.user.findMany({
+            take: 20,
             include: {
                 posts: {
                     include: {
@@ -22,6 +24,7 @@ exports.getAllUsers = (0, express_async_handler_1.default)(async (req, res, next
                 comments: true,
             },
         });
+        console.log("Sending all users...");
         res.json(users);
     }
     catch (err) {
@@ -35,13 +38,8 @@ exports.getUserById = (0, express_async_handler_1.default)(async (req, res, next
             res.status(400).json({ message: "Id params undefined" });
             return;
         }
-        const userId = parseInt(id, 10);
-        if (isNaN(userId)) {
-            res.status(400).json({ message: "Invalid post ID" });
-            return;
-        }
         const user = await client_1.default.user.findUnique({
-            where: { id: userId },
+            where: { id: id },
             include: {
                 posts: {
                     include: {

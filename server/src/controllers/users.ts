@@ -11,7 +11,9 @@ interface RequestBody {
 export const getAllUsers = expressAsyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      console.log("Getting all users...")
       const users = await prisma.user.findMany({
+        take: 20,
         include: {
           posts: {
             include: {
@@ -26,6 +28,7 @@ export const getAllUsers = expressAsyncHandler(
         },
       });
 
+      console.log("Sending all users...")
       res.json(users);
     } catch (err) {
       res.status(500).json({ message: "Server error" });
@@ -47,14 +50,8 @@ export const getUserById = expressAsyncHandler(
         return;
       }
 
-      const userId = parseInt(id, 10);
-      if (isNaN(userId)) {
-        res.status(400).json({ message: "Invalid post ID" });
-        return;
-      }
-
       const user = await prisma.user.findUnique({
-        where: { id: userId },
+        where: { id: id },
         include: {
           posts: {
             include: {

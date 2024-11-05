@@ -19,7 +19,7 @@ exports.getAllPosts = (0, express_async_handler_1.default)(async (req, res, next
         res.json(posts);
     }
     catch (err) {
-        res.status(500).json({ message: "Server error" });
+        res.status(500).json({ message: "Server error", error: err });
     }
 });
 exports.getPostById = (0, express_async_handler_1.default)(async (req, res, next) => {
@@ -29,13 +29,8 @@ exports.getPostById = (0, express_async_handler_1.default)(async (req, res, next
             res.status(400).json({ message: "Id params undefined" });
             return;
         }
-        const postId = parseInt(id, 10);
-        if (isNaN(postId)) {
-            res.status(400).json({ message: "Invalid post ID" });
-            return;
-        }
         const post = await client_1.default.post.findUnique({
-            where: { id: postId },
+            where: { id: id },
             include: {
                 user: true,
                 comments: {
@@ -97,14 +92,9 @@ exports.getAllComments = (0, express_async_handler_1.default)(async (req, res, n
             res.status(400).json({ message: "Id params undefined" });
             return;
         }
-        const postId = parseInt(id, 10);
-        if (isNaN(postId)) {
-            res.status(400).json({ message: "Invalid post ID" });
-            return;
-        }
         const comments = await client_1.default.comment.findMany({
             where: {
-                postId: postId,
+                postId: id,
             },
             include: {
                 user: true,
@@ -127,11 +117,6 @@ exports.createComment = (0, express_async_handler_1.default)(async (req, res, ne
         let postId = req.params.id;
         if (!postId) {
             res.status(400).json({ message: "Id params undefined" });
-            return;
-        }
-        postId = parseInt(postId, 10);
-        if (isNaN(postId)) {
-            res.status(400).json({ message: "Invalid id" });
             return;
         }
         const newComment = await client_1.default.comment.create({
@@ -163,15 +148,10 @@ exports.toggleUpvote = (0, express_async_handler_1.default)(async (req, res, nex
             res.status(401).json({ message: "Unauthorized" });
             return;
         }
-        postId = parseInt(postId, 10);
-        if (isNaN(postId)) {
-            res.status(400).json({ message: "Invalid id" });
-            return;
-        }
         const upvote = await client_1.default.upvote.findUnique({
             where: {
                 userId_postId: {
-                    postId,
+                    postId: postId,
                     userId: user.id,
                 },
             },
@@ -208,15 +188,10 @@ exports.toggleDownvote = (0, express_async_handler_1.default)(async (req, res, n
             res.status(401).json({ message: "Unauthorized" });
             return;
         }
-        postId = parseInt(postId, 10);
-        if (isNaN(postId)) {
-            res.status(400).json({ message: "Invalid id" });
-            return;
-        }
         const downvote = await client_1.default.downvote.findUnique({
             where: {
                 userId_postId: {
-                    postId,
+                    postId: postId,
                     userId: user.id,
                 },
             },

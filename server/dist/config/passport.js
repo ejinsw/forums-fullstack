@@ -10,7 +10,7 @@ const client_1 = __importDefault(require("./client"));
 const opts = {
     jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: process.env.JWT_SECRET || "secret",
-    algorithms: ['HS256'],
+    algorithms: ["HS256"],
 };
 passport_1.default.use(new passport_jwt_1.Strategy(opts, async function (jwt_payload, done) {
     try {
@@ -32,5 +32,5 @@ passport_1.default.use(new passport_jwt_1.Strategy(opts, async function (jwt_pay
         return done(err, false);
     }
 }));
-exports.authenticate = passport_1.default.authenticate('jwt', { session: false });
+exports.authenticate = passport_1.default.authenticate("jwt", { session: false });
 exports.default = passport_1.default;

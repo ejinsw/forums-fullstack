@@ -23,7 +23,7 @@ export const getAllPosts = expressAsyncHandler(
 
       res.json(posts);
     } catch (err) {
-      res.status(500).json({ message: "Server error" });
+      res.status(500).json({ message: "Server error", error: err });
     }
   }
 );
@@ -42,14 +42,8 @@ export const getPostById = expressAsyncHandler(
         return;
       }
 
-      const postId = parseInt(id, 10);
-      if (isNaN(postId)) {
-        res.status(400).json({ message: "Invalid post ID" });
-        return;
-      }
-
       const post = await prisma.post.findUnique({
-        where: { id: postId },
+        where: { id: id },
         include: {
           user: true,
           comments: {
@@ -122,15 +116,9 @@ export const getAllComments = expressAsyncHandler(
         return;
       }
 
-      const postId = parseInt(id, 10);
-      if (isNaN(postId)) {
-        res.status(400).json({ message: "Invalid post ID" });
-        return;
-      }
-
       const comments = await prisma.comment.findMany({
         where: {
-          postId: postId,
+          postId: id,
         },
         include: {
           user: true,
@@ -158,16 +146,10 @@ export const createComment = expressAsyncHandler(
       }
 
       const { content } = req.body;
-      let postId: number | string = req.params.id;
+      let postId: string = req.params.id;
 
       if (!postId) {
         res.status(400).json({ message: "Id params undefined" });
-        return;
-      }
-
-      postId = parseInt(postId, 10);
-      if (isNaN(postId)) {
-        res.status(400).json({ message: "Invalid id" });
         return;
       }
 
@@ -200,7 +182,7 @@ export const toggleUpvote = expressAsyncHandler(
     next: NextFunction
   ) => {
     try {
-      let postId: number | string = req.params.id;
+      let postId: string = req.params.id;
       const user = req.user as User;
 
       if (!user) {
@@ -208,16 +190,10 @@ export const toggleUpvote = expressAsyncHandler(
         return;
       }
 
-      postId = parseInt(postId, 10);
-      if (isNaN(postId)) {
-        res.status(400).json({ message: "Invalid id" });
-        return;
-      }
-
       const upvote = await prisma.upvote.findUnique({
         where: {
           userId_postId: {
-            postId,
+            postId: postId,
             userId: user.id,
           },
         },
@@ -254,7 +230,7 @@ export const toggleDownvote = expressAsyncHandler(
     next: NextFunction
   ) => {
     try {
-      let postId: number | string = req.params.id;
+      let postId: string = req.params.id;
       const user = req.user as User;
 
       if (!user) {
@@ -262,16 +238,10 @@ export const toggleDownvote = expressAsyncHandler(
         return;
       }
 
-      postId = parseInt(postId, 10);
-      if (isNaN(postId)) {
-        res.status(400).json({ message: "Invalid id" });
-        return;
-      }
-
       const downvote = await prisma.downvote.findUnique({
         where: {
           userId_postId: {
-            postId,
+            postId: postId,
             userId: user.id,
           },
         },

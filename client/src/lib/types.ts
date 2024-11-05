@@ -1,5 +1,5 @@
 export interface User {
-	id: number;
+	id: string;
 	username: string;
 	password: string;
 	name: string;
@@ -10,12 +10,12 @@ export interface User {
 }
 
 export interface Post {
-	id: number;
+	id: string;
 	title: string;
 	content: string;
 	published: boolean;
 	creationDate: string;
-	userId: number;
+	userId: string;
 	user: User;
 	comments: Comment[];
 	upvotes: Upvote[];
@@ -23,36 +23,36 @@ export interface Post {
 }
 
 export interface Comment {
-	id: number;
+	id: string;
 	content: string;
 	creationDate: string;
 	user: User;
 	replies: Comment[];
-	userId: number;
-	postId: number;
+	userId: string;
+	postId: string;
 	post: Post
 	isDeleted: boolean;
 	upvotes: Upvote[];
 	downvotes: Downvote[];
 	parent?: Comment
-	parentId?: number
+	parentId?: string
 }
 
 export interface Upvote {
-	id: number;
-	userId: number;
-	commentId?: number;
-	postId?: number;
+	id: string;
+	userId: string;
+	commentId?: string;
+	postId?: string;
 	user: User;
 	post?: Post;
 	comment?: Comment;
 }
 
 export interface Downvote {
-	id: number;
-	userId: number;
-	commentId?: number;
-	postId?: number;
+	id: string;
+	userId: string;
+	commentId?: string;
+	postId?: string;
 	user: User;
 	post?: Post;
 	comment?: Comment;

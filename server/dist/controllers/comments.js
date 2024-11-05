@@ -13,11 +13,6 @@ exports.getCommentById = (0, express_async_handler_1.default)(async (req, res, n
             res.status(400).json({ message: "Id params undefined" });
             return;
         }
-        commentId = parseInt(commentId, 10);
-        if (isNaN(commentId)) {
-            res.status(400).json({ message: "Invalid id" });
-            return;
-        }
         const comment = await client_1.default.comment.findUnique({
             where: {
                 id: commentId,
@@ -50,11 +45,6 @@ exports.createReply = (0, express_async_handler_1.default)(async (req, res, next
         let commentId = req.params.id;
         if (!commentId) {
             res.status(400).json({ message: "Id params undefined" });
-            return;
-        }
-        commentId = parseInt(commentId, 10);
-        if (isNaN(commentId)) {
-            res.status(400).json({ message: "Invalid id" });
             return;
         }
         const newComment = await client_1.default.comment.create({
@@ -90,11 +80,6 @@ exports.updateReply = (0, express_async_handler_1.default)(async (req, res, next
         let commentId = req.params.id;
         if (!commentId) {
             res.status(400).json({ message: "Id params undefined" });
-            return;
-        }
-        commentId = parseInt(commentId, 10);
-        if (isNaN(commentId)) {
-            res.status(400).json({ message: "Invalid id" });
             return;
         }
         const newComment = await client_1.default.comment.findUnique({
@@ -146,11 +131,6 @@ exports.deleteComment = (0, express_async_handler_1.default)(async (req, res, ne
         let commentId = req.params.id;
         if (!commentId) {
             res.status(400).json({ message: "Id params undefined" });
-            return;
-        }
-        commentId = parseInt(commentId, 10);
-        if (isNaN(commentId)) {
-            res.status(400).json({ message: "Invalid id" });
             return;
         }
         const existingComment = await client_1.default.comment.findUnique({
@@ -209,11 +189,6 @@ exports.getReplies = (0, express_async_handler_1.default)(async (req, res, next)
             res.status(400).json({ message: "Id params undefined" });
             return;
         }
-        commentId = parseInt(commentId, 10);
-        if (isNaN(commentId)) {
-            res.status(400).json({ message: "Invalid id" });
-            return;
-        }
         const comment = await client_1.default.comment.findUnique({
             where: {
                 id: commentId,
@@ -248,15 +223,10 @@ exports.toggleUpvote = (0, express_async_handler_1.default)(async (req, res, nex
             res.status(401).json({ message: "Unauthorized" });
             return;
         }
-        commentId = parseInt(commentId, 10);
-        if (isNaN(commentId)) {
-            res.status(400).json({ message: "Invalid id" });
-            return;
-        }
         const upvote = await client_1.default.upvote.findUnique({
             where: {
                 userId_commentId: {
-                    commentId,
+                    commentId: commentId,
                     userId: user.id,
                 },
             },
@@ -293,15 +263,10 @@ exports.toggleDownvote = (0, express_async_handler_1.default)(async (req, res, n
             res.status(401).json({ message: "Unauthorized" });
             return;
         }
-        commentId = parseInt(commentId, 10);
-        if (isNaN(commentId)) {
-            res.status(400).json({ message: "Invalid id" });
-            return;
-        }
         const downvote = await client_1.default.downvote.findUnique({
             where: {
                 userId_commentId: {
-                    commentId,
+                    commentId: commentId,
                     userId: user.id,
                 },
             },

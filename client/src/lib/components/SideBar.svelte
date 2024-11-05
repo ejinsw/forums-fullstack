@@ -178,6 +178,7 @@
 				<a
 					class="flex items-center space-x-3 py-2 px-4 mb-2 rounded-md hover:bg-base-200 transition-colors"
 					href={route}
+					on:click={toggleCollapse}
 				>
 					<svelte:component this={icon} class="text-lg min-w-fit" />
 					{#if open}
@@ -193,6 +194,7 @@
 				<a
 					class="flex items-center space-x-3 py-2 px-4 mb-2 rounded-md hover:bg-base-200 transition-colors"
 					href={route}
+					on:click={toggleCollapse}
 				>
 					<svelte:component this={icon} class="text-lg min-w-fit" />
 					{#if open}

@@ -15,16 +15,10 @@ export const getCommentById = expressAsyncHandler(
     next: NextFunction
   ) => {
     try {
-      let commentId: number | string = req.params.id;
+      let commentId: string = req.params.id;
 
       if (!commentId) {
         res.status(400).json({ message: "Id params undefined" });
-        return;
-      }
-
-      commentId = parseInt(commentId, 10);
-      if (isNaN(commentId)) {
-        res.status(400).json({ message: "Invalid id" });
         return;
       }
 
@@ -67,16 +61,10 @@ export const createReply = expressAsyncHandler(
 
       const { content, postId } = req.body;
 
-      let commentId: number | string = req.params.id;
+      let commentId: string = req.params.id;
 
       if (!commentId) {
         res.status(400).json({ message: "Id params undefined" });
-        return;
-      }
-
-      commentId = parseInt(commentId, 10);
-      if (isNaN(commentId)) {
-        res.status(400).json({ message: "Invalid id" });
         return;
       }
 
@@ -118,16 +106,10 @@ export const updateReply = expressAsyncHandler(
 
       const { content } = req.body;
 
-      let commentId: number | string = req.params.id;
+      let commentId: string = req.params.id;
 
       if (!commentId) {
         res.status(400).json({ message: "Id params undefined" });
-        return;
-      }
-
-      commentId = parseInt(commentId, 10);
-      if (isNaN(commentId)) {
-        res.status(400).json({ message: "Invalid id" });
         return;
       }
 
@@ -187,16 +169,10 @@ export const deleteComment = expressAsyncHandler(
         return;
       }
 
-      let commentId: number | string = req.params.id;
+      let commentId: string = req.params.id;
 
       if (!commentId) {
         res.status(400).json({ message: "Id params undefined" });
-        return;
-      }
-
-      commentId = parseInt(commentId, 10);
-      if (isNaN(commentId)) {
-        res.status(400).json({ message: "Invalid id" });
         return;
       }
 
@@ -262,16 +238,10 @@ export const getReplies = expressAsyncHandler(
     next: NextFunction
   ) => {
     try {
-      let commentId: number | string = req.params.id;
+      let commentId: string = req.params.id;
 
       if (!commentId) {
         res.status(400).json({ message: "Id params undefined" });
-        return;
-      }
-
-      commentId = parseInt(commentId, 10);
-      if (isNaN(commentId)) {
-        res.status(400).json({ message: "Invalid id" });
         return;
       }
 
@@ -312,7 +282,7 @@ export const toggleUpvote = expressAsyncHandler(
     next: NextFunction
   ) => {
     try {
-      let commentId: number | string = req.params.id;
+      let commentId: string = req.params.id;
       const user = req.user as User;
 
       if (!user) {
@@ -320,16 +290,10 @@ export const toggleUpvote = expressAsyncHandler(
         return;
       }
 
-      commentId = parseInt(commentId, 10);
-      if (isNaN(commentId)) {
-        res.status(400).json({ message: "Invalid id" });
-        return;
-      }
-
       const upvote = await prisma.upvote.findUnique({
         where: {
           userId_commentId: {
-            commentId,
+            commentId: commentId,
             userId: user.id,
           },
         },
@@ -366,7 +330,7 @@ export const toggleDownvote = expressAsyncHandler(
     next: NextFunction
   ) => {
     try {
-        let commentId: number | string = req.params.id;
+        let commentId: string = req.params.id;
         const user = req.user as User;
   
         if (!user) {
@@ -374,16 +338,10 @@ export const toggleDownvote = expressAsyncHandler(
           return;
         }
   
-        commentId = parseInt(commentId, 10);
-        if (isNaN(commentId)) {
-          res.status(400).json({ message: "Invalid id" });
-          return;
-        }
-  
         const downvote = await prisma.downvote.findUnique({
           where: {
             userId_commentId: {
-              commentId,
+              commentId: commentId,
               userId: user.id,
             },
           },
